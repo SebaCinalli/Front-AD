@@ -106,7 +106,7 @@ export function Dj() {
           ? `${import.meta.env.VITE_API_URL}/api/dj?fecha=${encodeURIComponent(
               fechaDMY
             )}`
-          : '${import.meta.env.VITE_API_URL}/api/dj';
+          : `${import.meta.env.VITE_API_URL}/api/dj`;
         const response = await axios.get(url, {
           withCredentials: true,
         });
@@ -120,9 +120,12 @@ export function Dj() {
 
     const fetchZonas = async () => {
       try {
-        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/zona', {
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/zona`,
+          {
+            withCredentials: true,
+          }
+        );
         const data = response.data.data;
         // Extraer todas las zonas disponibles del sistema con validación
         const todasLasZonas = data

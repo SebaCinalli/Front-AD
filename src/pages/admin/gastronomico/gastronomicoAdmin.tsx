@@ -92,7 +92,7 @@ export function GastronomicoAdmin() {
     const fetchGastronomicos = async () => {
       try {
         const response = await axios.get(
-          '${import.meta.env.VITE_API_URL}/api/gastronomico',
+          `${import.meta.env.VITE_API_URL}/api/gastronomico`,
           { withCredentials: true }
         );
         setGastronomicos(response.data.data);
@@ -103,7 +103,7 @@ export function GastronomicoAdmin() {
 
     const fetchZonas = async () => {
       try {
-        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/zona', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/zona`, {
           withCredentials: true,
         });
         setZonas(response.data.data);
@@ -243,7 +243,7 @@ export function GastronomicoAdmin() {
 
         console.log('Creando nuevo gastronómico con FormData');
         response = await axios.post(
-          '${import.meta.env.VITE_API_URL}/api/gastronomico',
+          `${import.meta.env.VITE_API_URL}/api/gastronomico`,
           data,
           {
             withCredentials: true,
@@ -255,7 +255,7 @@ export function GastronomicoAdmin() {
       }
 
       const listResponse = await axios.get(
-        '${import.meta.env.VITE_API_URL}/api/gastronomico',
+        `${import.meta.env.VITE_API_URL}/api/gastronomico`,
         { withCredentials: true }
       );
       setGastronomicos(listResponse.data.data);
@@ -293,7 +293,7 @@ export function GastronomicoAdmin() {
         });
 
         const response = await axios.get(
-          '${import.meta.env.VITE_API_URL}/api/gastronomico',
+          `${import.meta.env.VITE_API_URL}/api/gastronomico`,
           { withCredentials: true }
         );
         setGastronomicos(response.data.data);

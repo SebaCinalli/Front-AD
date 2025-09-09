@@ -97,7 +97,7 @@ export function BarraAdmin() {
   useEffect(() => {
     const fetchBarras = async () => {
       try {
-        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/barra', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/barra`, {
           withCredentials: true,
         });
         setBarras(response.data.data);
@@ -111,7 +111,7 @@ export function BarraAdmin() {
 
     const fetchZonas = async () => {
       try {
-        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/zona', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/zona`, {
           withCredentials: true,
         });
         setZonas(response.data.data);
@@ -263,7 +263,7 @@ export function BarraAdmin() {
         }
 
         console.log('Creando nueva barra con FormData');
-        response = await axios.post('${import.meta.env.VITE_API_URL}/api/barra', data, {
+        response = await axios.post(`${import.meta.env.VITE_API_URL}/api/barra`, data, {
           withCredentials: true,
           headers: { 'Content-Type': 'multipart/form-data' },
         });
@@ -272,7 +272,7 @@ export function BarraAdmin() {
       }
 
       // Recargar la lista de Barras
-      const listResponse = await axios.get('${import.meta.env.VITE_API_URL}/api/barra', {
+      const listResponse = await axios.get(`${import.meta.env.VITE_API_URL}/api/barra`, {
         withCredentials: true,
       });
       setBarras(listResponse.data.data);
@@ -308,7 +308,7 @@ export function BarraAdmin() {
         });
 
         // Recargar la lista de Barras
-        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/barra', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/barra`, {
           withCredentials: true,
         });
         setBarras(response.data.data);

@@ -20,7 +20,7 @@ export function ZonaAdmin() {
   useEffect(() => {
     const fetchZonas = async () => {
       try {
-        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/zona', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/zona`, {
           withCredentials: true,
         });
         setZonas(response.data.data);
@@ -97,7 +97,7 @@ export function ZonaAdmin() {
 
         console.log('Creando nueva zona:', dataToSend);
         response = await axios.post(
-          '${import.meta.env.VITE_API_URL}/api/zona',
+          `${import.meta.env.VITE_API_URL}/api/zona`,
           dataToSend,
           {
             withCredentials: true,
@@ -108,7 +108,7 @@ export function ZonaAdmin() {
       }
 
       // Recargar la lista de zonas
-      const listResponse = await axios.get('${import.meta.env.VITE_API_URL}/api/zona', {
+      const listResponse = await axios.get(`${import.meta.env.VITE_API_URL}/api/zona`, {
         withCredentials: true,
       });
       setZonas(listResponse.data.data);
@@ -144,7 +144,7 @@ export function ZonaAdmin() {
         });
 
         // Recargar la lista de zonas
-        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/zona', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/zona`, {
           withCredentials: true,
         });
         setZonas(response.data.data);

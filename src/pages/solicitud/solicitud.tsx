@@ -64,7 +64,7 @@ export function Solicitud() {
     try {
       setLoading(true);
       const response = await axios.get(
-        '${import.meta.env.VITE_API_URL}/api/solicitud',
+        `${import.meta.env.VITE_API_URL}/api/solicitud`,
         {
           withCredentials: true,
         }
@@ -100,16 +100,16 @@ export function Solicitud() {
       console.log('Iniciando fetchServiciosDisponibles...');
       const [djResponse, salonResponse, barraResponse, gastronomicoResponse] =
         await Promise.all([
-          axios.get('${import.meta.env.VITE_API_URL}/api/dj', {
+          axios.get(`${import.meta.env.VITE_API_URL}/api/dj`, {
             withCredentials: true,
           }),
-          axios.get('${import.meta.env.VITE_API_URL}/api/salon', {
+          axios.get(`${import.meta.env.VITE_API_URL}/api/salon`, {
             withCredentials: true,
           }),
-          axios.get('${import.meta.env.VITE_API_URL}/api/barra', {
+          axios.get(`${import.meta.env.VITE_API_URL}/api/barra`, {
             withCredentials: true,
           }),
-          axios.get('${import.meta.env.VITE_API_URL}/api/gastronomico', {
+          axios.get(`${import.meta.env.VITE_API_URL}/api/gastronomico`, {
             withCredentials: true,
           }),
         ]);

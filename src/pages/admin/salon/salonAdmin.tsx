@@ -100,7 +100,7 @@ export function SalonAdmin() {
   useEffect(() => {
     const fetchSalones = async () => {
       try {
-        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/salon', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/salon`, {
           withCredentials: true,
         });
         setSalones(response.data.data);
@@ -111,7 +111,7 @@ export function SalonAdmin() {
 
     const fetchZonas = async () => {
       try {
-        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/zona', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/zona`, {
           withCredentials: true,
         });
         setZonas(response.data.data);
@@ -265,7 +265,7 @@ export function SalonAdmin() {
         }
 
         console.log('Creando nuevo salón con FormData');
-        response = await axios.post('${import.meta.env.VITE_API_URL}/api/salon', data, {
+        response = await axios.post(`${import.meta.env.VITE_API_URL}/api/salon`, data, {
           withCredentials: true,
           headers: { 'Content-Type': 'multipart/form-data' },
         });
@@ -274,7 +274,7 @@ export function SalonAdmin() {
       }
 
       // Recargar la lista de Salones
-      const listResponse = await axios.get('${import.meta.env.VITE_API_URL}/api/salon', {
+      const listResponse = await axios.get(`${import.meta.env.VITE_API_URL}/api/salon`, {
         withCredentials: true,
       });
       setSalones(listResponse.data.data);
@@ -310,7 +310,7 @@ export function SalonAdmin() {
         });
 
         // Recargar la lista de Salones
-        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/salon', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/salon`, {
           withCredentials: true,
         });
         setSalones(response.data.data);

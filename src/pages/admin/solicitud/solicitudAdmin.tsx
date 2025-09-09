@@ -52,7 +52,7 @@ export function SolicitudAdmin() {
       try {
         setLoading(true);
         const response = await axios.get(
-          '${import.meta.env.VITE_API_URL}/api/solicitud',
+          `${import.meta.env.VITE_API_URL}/api/solicitud`,
           {
             withCredentials: true,
           }

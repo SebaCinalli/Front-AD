@@ -109,7 +109,7 @@ export function Barra() {
           ? `${import.meta.env.VITE_API_URL}/api/barra?fecha=${encodeURIComponent(
               fechaDMY
             )}`
-          : '${import.meta.env.VITE_API_URL}/api/barra';
+          : `${import.meta.env.VITE_API_URL}/api/barra`;
         const response = await axios.get(url, {
           withCredentials: true,
         });
@@ -129,7 +129,7 @@ export function Barra() {
 
     const fetchZonas = async () => {
       try {
-        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/zona', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/zona`, {
           withCredentials: true,
         });
         const data = response.data.data;

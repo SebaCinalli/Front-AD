@@ -96,7 +96,7 @@ export function DjAdmin() {
   useEffect(() => {
     const fetchDjs = async () => {
       try {
-        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/dj', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/dj`, {
           withCredentials: true,
         });
         setDjs(response.data.data);
@@ -107,7 +107,7 @@ export function DjAdmin() {
 
     const fetchZonas = async () => {
       try {
-        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/zona', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/zona`, {
           withCredentials: true,
         });
         setZonas(response.data.data);
@@ -255,7 +255,7 @@ export function DjAdmin() {
         }
 
         console.log('Creando nuevo DJ con FormData');
-        response = await axios.post('${import.meta.env.VITE_API_URL}/api/dj', data, {
+        response = await axios.post(`${import.meta.env.VITE_API_URL}/api/dj`, data, {
           withCredentials: true,
           headers: { 'Content-Type': 'multipart/form-data' },
         });
@@ -264,7 +264,7 @@ export function DjAdmin() {
       }
 
       // Recargar la lista de DJs
-      const listResponse = await axios.get('${import.meta.env.VITE_API_URL}/api/dj', {
+      const listResponse = await axios.get(`${import.meta.env.VITE_API_URL}/api/dj`, {
         withCredentials: true,
       });
       setDjs(listResponse.data.data);
@@ -296,7 +296,7 @@ export function DjAdmin() {
         });
 
         // Recargar la lista de DJs
-        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/dj', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/dj`, {
           withCredentials: true,
         });
         setDjs(response.data.data);

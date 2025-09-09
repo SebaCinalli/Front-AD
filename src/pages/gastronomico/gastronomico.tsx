@@ -111,7 +111,7 @@ export function Gastronomico() {
           ? `${import.meta.env.VITE_API_URL}/api/gastronomico?fecha=${encodeURIComponent(
               fechaDMY
             )}`
-          : '${import.meta.env.VITE_API_URL}/api/gastronomico';
+          : `${import.meta.env.VITE_API_URL}/api/gastronomico`;
         const response = await axios.get(url, { withCredentials: true });
         const data = response.data.data;
         setGastronomicos(data);
@@ -131,7 +131,7 @@ export function Gastronomico() {
 
     const fetchZonas = async () => {
       try {
-        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/zona', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/zona`, {
           withCredentials: true,
         });
         const data = response.data.data;
