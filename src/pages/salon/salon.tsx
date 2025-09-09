@@ -102,17 +102,17 @@ export function Salon() {
     // Si ya es una URL completa, devolverla tal como está
     if (fileName.startsWith('http')) return fileName;
     // Si es solo el nombre del archivo, construir la URL completa
-    return `https://back-ad-1.onrender.com:10000/uploads/salones/${fileName}`;
+    return `${import.meta.env.VITE_API_URL}/uploads/salones/${fileName}`;
   };
 
   useEffect(() => {
     const fetchSalones = async () => {
       try {
         const url = fechaDMY
-          ? `https://back-ad-1.onrender.com:10000/api/salon?fecha=${encodeURIComponent(
-              fechaDMY
-            )}`
-          : 'https://back-ad-1.onrender.com:10000/api/salon';
+          ? `${
+              import.meta.env.VITE_API_URL
+            }/api/salon?fecha=${encodeURIComponent(fechaDMY)}`
+          : `${import.meta.env.VITE_API_URL}/api/salon`;
         const response = await axios.get(url, {
           withCredentials: true,
         });
@@ -127,7 +127,7 @@ export function Salon() {
     const fetchZonas = async () => {
       try {
         const response = await axios.get(
-          'https://back-ad-1.onrender.com:10000/api/zona',
+          `${import.meta.env.VITE_API_URL}/api/zona`,
           {
             withCredentials: true,
           }

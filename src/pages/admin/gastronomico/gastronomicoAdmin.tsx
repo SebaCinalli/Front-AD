@@ -31,7 +31,7 @@ const GastronomicoImage = memo(
       if (foto) {
         const fullUrl = foto.startsWith('http')
           ? foto
-          : `http://localhost:10000/uploads/gastronomicos/${foto}`;
+          : `${import.meta.env.VITE_API_URL}/uploads/gastronomicos/${foto}`;
         const urlWithTimestamp = `${fullUrl}?t=${Date.now()}`;
         setImageUrl(urlWithTimestamp);
         setImageError(false);
@@ -85,14 +85,14 @@ export function GastronomicoAdmin() {
   const buildImageUrl = useCallback((fileName: string | undefined) => {
     if (!fileName) return '';
     if (fileName.startsWith('http')) return fileName;
-    return `http://localhost:10000/uploads/gastronomicos/${fileName}`;
+    return `${import.meta.env.VITE_API_URL}/uploads/gastronomicos/${fileName}`;
   }, []);
 
   useEffect(() => {
     const fetchGastronomicos = async () => {
       try {
         const response = await axios.get(
-          'http://localhost:10000/api/gastronomico',
+          '${import.meta.env.VITE_API_URL}/api/gastronomico',
           { withCredentials: true }
         );
         setGastronomicos(response.data.data);
@@ -103,7 +103,7 @@ export function GastronomicoAdmin() {
 
     const fetchZonas = async () => {
       try {
-        const response = await axios.get('http://localhost:10000/api/zona', {
+        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/zona', {
           withCredentials: true,
         });
         setZonas(response.data.data);
@@ -206,7 +206,7 @@ export function GastronomicoAdmin() {
 
           console.log('Editando sin nueva imagen:', dataToSend);
           response = await axios.put(
-            `http://localhost:10000/api/gastronomico/${editingGastronomico.id}`,
+            `${import.meta.env.VITE_API_URL}/api/gastronomico/${editingGastronomico.id}`,
             dataToSend,
             { withCredentials: true }
           );
@@ -220,7 +220,7 @@ export function GastronomicoAdmin() {
 
           console.log('Editando con nueva imagen');
           response = await axios.put(
-            `http://localhost:10000/api/gastronomico/${editingGastronomico.id}`,
+            `${import.meta.env.VITE_API_URL}/api/gastronomico/${editingGastronomico.id}`,
             data,
             {
               withCredentials: true,
@@ -243,7 +243,7 @@ export function GastronomicoAdmin() {
 
         console.log('Creando nuevo gastronómico con FormData');
         response = await axios.post(
-          'http://localhost:10000/api/gastronomico',
+          '${import.meta.env.VITE_API_URL}/api/gastronomico',
           data,
           {
             withCredentials: true,
@@ -255,7 +255,7 @@ export function GastronomicoAdmin() {
       }
 
       const listResponse = await axios.get(
-        'http://localhost:10000/api/gastronomico',
+        '${import.meta.env.VITE_API_URL}/api/gastronomico',
         { withCredentials: true }
       );
       setGastronomicos(listResponse.data.data);
@@ -288,12 +288,12 @@ export function GastronomicoAdmin() {
       )
     ) {
       try {
-        await axios.delete(`http://localhost:10000/api/gastronomico/${id}`, {
+        await axios.delete(`${import.meta.env.VITE_API_URL}/api/gastronomico/${id}`, {
           withCredentials: true,
         });
 
         const response = await axios.get(
-          'http://localhost:10000/api/gastronomico',
+          '${import.meta.env.VITE_API_URL}/api/gastronomico',
           { withCredentials: true }
         );
         setGastronomicos(response.data.data);

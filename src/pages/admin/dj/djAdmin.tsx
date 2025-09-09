@@ -32,7 +32,7 @@ const DjImage = memo(
         // Construir URL completa si es necesario
         const fullUrl = foto.startsWith('http')
           ? foto
-          : `http://localhost:10000/uploads/djs/${foto}`;
+          : `${import.meta.env.VITE_API_URL}/uploads/djs/${foto}`;
 
         // Agregar timestamp para cache busting si la imagen ya estaba cargada
         const urlWithTimestamp = `${fullUrl}?t=${Date.now()}`;
@@ -90,13 +90,13 @@ export function DjAdmin() {
     // Si ya es una URL completa, devolverla tal como está
     if (fileName.startsWith('http')) return fileName;
     // Si es solo el nombre del archivo, construir la URL completa
-    return `http://localhost:10000/uploads/djs/${fileName}`;
+    return `${import.meta.env.VITE_API_URL}/uploads/djs/${fileName}`;
   }, []);
 
   useEffect(() => {
     const fetchDjs = async () => {
       try {
-        const response = await axios.get('http://localhost:10000/api/dj', {
+        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/dj', {
           withCredentials: true,
         });
         setDjs(response.data.data);
@@ -107,7 +107,7 @@ export function DjAdmin() {
 
     const fetchZonas = async () => {
       try {
-        const response = await axios.get('http://localhost:10000/api/zona', {
+        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/zona', {
           withCredentials: true,
         });
         setZonas(response.data.data);
@@ -216,7 +216,7 @@ export function DjAdmin() {
 
           console.log('Editando sin nueva imagen:', dataToSend);
           response = await axios.put(
-            `http://localhost:10000/api/dj/${editingDj.id}`,
+            `${import.meta.env.VITE_API_URL}/api/dj/${editingDj.id}`,
             dataToSend,
             {
               withCredentials: true,
@@ -233,7 +233,7 @@ export function DjAdmin() {
 
           console.log('Editando con nueva imagen');
           response = await axios.put(
-            `http://localhost:10000/api/dj/${editingDj.id}`,
+            `${import.meta.env.VITE_API_URL}/api/dj/${editingDj.id}`,
             data,
             {
               withCredentials: true,
@@ -255,7 +255,7 @@ export function DjAdmin() {
         }
 
         console.log('Creando nuevo DJ con FormData');
-        response = await axios.post('http://localhost:10000/api/dj', data, {
+        response = await axios.post('${import.meta.env.VITE_API_URL}/api/dj', data, {
           withCredentials: true,
           headers: { 'Content-Type': 'multipart/form-data' },
         });
@@ -264,7 +264,7 @@ export function DjAdmin() {
       }
 
       // Recargar la lista de DJs
-      const listResponse = await axios.get('http://localhost:10000/api/dj', {
+      const listResponse = await axios.get('${import.meta.env.VITE_API_URL}/api/dj', {
         withCredentials: true,
       });
       setDjs(listResponse.data.data);
@@ -291,12 +291,12 @@ export function DjAdmin() {
   const handleDelete = async (id: number) => {
     if (window.confirm('¿Estás seguro de que quieres eliminar este DJ?')) {
       try {
-        await axios.delete(`http://localhost:10000/api/dj/${id}`, {
+        await axios.delete(`${import.meta.env.VITE_API_URL}/api/dj/${id}`, {
           withCredentials: true,
         });
 
         // Recargar la lista de DJs
-        const response = await axios.get('http://localhost:10000/api/dj', {
+        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/dj', {
           withCredentials: true,
         });
         setDjs(response.data.data);

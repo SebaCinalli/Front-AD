@@ -42,7 +42,7 @@ export const Profile: React.FC = () => {
     setIsDeleting(true);
     try {
       const response = await axios.delete(
-        `http://localhost:10000/api/usuario/${contextUser.id}`,
+        `${import.meta.env.VITE_API_URL}/api/usuario/${contextUser.id}`,
         { withCredentials: true }
       );
       if (response.status === 200) {
@@ -181,7 +181,7 @@ export const Profile: React.FC = () => {
       };
 
       const response = await axios.put(
-        `http://localhost:10000/api/usuario/${contextUser.id}`,
+        `${import.meta.env.VITE_API_URL}/api/usuario/${contextUser.id}`,
         updateData,
         { withCredentials: true }
       );

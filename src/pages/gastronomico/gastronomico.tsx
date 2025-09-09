@@ -101,17 +101,17 @@ export function Gastronomico() {
     // Si ya es una URL completa, devolverla tal como está
     if (fileName.startsWith('http')) return fileName;
     // Si es solo el nombre del archivo, construir la URL completa
-    return `http://localhost:10000/uploads/gastronomicos/${fileName}`;
+    return `${import.meta.env.VITE_API_URL}/uploads/gastronomicos/${fileName}`;
   };
 
   useEffect(() => {
     const fetchGastronomicos = async () => {
       try {
         const url = fechaDMY
-          ? `http://localhost:10000/api/gastronomico?fecha=${encodeURIComponent(
+          ? `${import.meta.env.VITE_API_URL}/api/gastronomico?fecha=${encodeURIComponent(
               fechaDMY
             )}`
-          : 'http://localhost:10000/api/gastronomico';
+          : '${import.meta.env.VITE_API_URL}/api/gastronomico';
         const response = await axios.get(url, { withCredentials: true });
         const data = response.data.data;
         setGastronomicos(data);
@@ -131,7 +131,7 @@ export function Gastronomico() {
 
     const fetchZonas = async () => {
       try {
-        const response = await axios.get('http://localhost:10000/api/zona', {
+        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/zona', {
           withCredentials: true,
         });
         const data = response.data.data;

@@ -20,7 +20,7 @@ export function ZonaAdmin() {
   useEffect(() => {
     const fetchZonas = async () => {
       try {
-        const response = await axios.get('http://localhost:10000/api/zona', {
+        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/zona', {
           withCredentials: true,
         });
         setZonas(response.data.data);
@@ -83,7 +83,7 @@ export function ZonaAdmin() {
 
         console.log('Editando zona:', dataToSend);
         response = await axios.put(
-          `http://localhost:10000/api/zona/${editingZona.id}`,
+          `${import.meta.env.VITE_API_URL}/api/zona/${editingZona.id}`,
           dataToSend,
           {
             withCredentials: true,
@@ -97,7 +97,7 @@ export function ZonaAdmin() {
 
         console.log('Creando nueva zona:', dataToSend);
         response = await axios.post(
-          'http://localhost:10000/api/zona',
+          '${import.meta.env.VITE_API_URL}/api/zona',
           dataToSend,
           {
             withCredentials: true,
@@ -108,7 +108,7 @@ export function ZonaAdmin() {
       }
 
       // Recargar la lista de zonas
-      const listResponse = await axios.get('http://localhost:10000/api/zona', {
+      const listResponse = await axios.get('${import.meta.env.VITE_API_URL}/api/zona', {
         withCredentials: true,
       });
       setZonas(listResponse.data.data);
@@ -139,12 +139,12 @@ export function ZonaAdmin() {
   const handleDelete = async (id: number) => {
     if (window.confirm('¿Estás seguro de que quieres eliminar esta zona?')) {
       try {
-        await axios.delete(`http://localhost:10000/api/zona/${id}`, {
+        await axios.delete(`${import.meta.env.VITE_API_URL}/api/zona/${id}`, {
           withCredentials: true,
         });
 
         // Recargar la lista de zonas
-        const response = await axios.get('http://localhost:10000/api/zona', {
+        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/zona', {
           withCredentials: true,
         });
         setZonas(response.data.data);

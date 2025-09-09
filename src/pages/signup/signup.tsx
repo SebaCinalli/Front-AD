@@ -55,7 +55,7 @@ const CreateUser = () => {
 
     console.log('Form submitted:', userdata);
     await axios.post(
-      'https://back-ad-1.onrender.com:10000/api/usuario/register',
+      `${import.meta.env.VITE_API_URL}/api/usuario/register`,
       userdata,
       {
         withCredentials: true,

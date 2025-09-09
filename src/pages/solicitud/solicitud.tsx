@@ -64,7 +64,7 @@ export function Solicitud() {
     try {
       setLoading(true);
       const response = await axios.get(
-        'https://back-ad-1.onrender.com:10000/api/solicitud',
+        '${import.meta.env.VITE_API_URL}/api/solicitud',
         {
           withCredentials: true,
         }
@@ -100,16 +100,16 @@ export function Solicitud() {
       console.log('Iniciando fetchServiciosDisponibles...');
       const [djResponse, salonResponse, barraResponse, gastronomicoResponse] =
         await Promise.all([
-          axios.get('https://back-ad-1.onrender.com:10000/api/dj', {
+          axios.get('${import.meta.env.VITE_API_URL}/api/dj', {
             withCredentials: true,
           }),
-          axios.get('https://back-ad-1.onrender.com:10000/api/salon', {
+          axios.get('${import.meta.env.VITE_API_URL}/api/salon', {
             withCredentials: true,
           }),
-          axios.get('https://back-ad-1.onrender.com:10000/api/barra', {
+          axios.get('${import.meta.env.VITE_API_URL}/api/barra', {
             withCredentials: true,
           }),
-          axios.get('https://back-ad-1.onrender.com:10000/api/gastronomico', {
+          axios.get('${import.meta.env.VITE_API_URL}/api/gastronomico', {
             withCredentials: true,
           }),
         ]);
@@ -183,7 +183,7 @@ export function Solicitud() {
     if (confirmacion) {
       try {
         await axios.put(
-          `https://back-ad-1.onrender.com:10000/api/solicitud/${solicitudId}`,
+          `${import.meta.env.VITE_API_URL}/api/solicitud/${solicitudId}`,
           { estado: 'Cancelada' },
           { withCredentials: true }
         );
@@ -255,7 +255,7 @@ export function Solicitud() {
       console.log('Datos enviados al backend:', updateData);
 
       const updateResponse = await axios.put(
-        `https://back-ad-1.onrender.com:10000/api/solicitud/${solicitudId}`,
+        `${import.meta.env.VITE_API_URL}/api/solicitud/${solicitudId}`,
         updateData,
         {
           withCredentials: true,

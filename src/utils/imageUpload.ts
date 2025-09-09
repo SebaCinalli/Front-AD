@@ -11,12 +11,16 @@ export const uploadImage = async (
     formData.append('imagen', file);
 
     console.log(
-      `Subiendo imagen a: https://back-ad-1.onrender.com:10000/api/${entityType}/${entityId}/upload-image`
+      `Subiendo imagen a: ${
+        import.meta.env.VITE_API_URL
+      }/api/${entityType}/${entityId}/upload-image`
     );
     console.log('Archivo:', file.name, file.size, file.type);
 
     const response = await axios.post(
-      `https://back-ad-1.onrender.com:10000/api/${entityType}/${entityId}/upload-image`,
+      `${
+        import.meta.env.VITE_API_URL
+      }/api/${entityType}/${entityId}/upload-image`,
       formData,
       {
         withCredentials: true, // Enviar cookies de sesión
@@ -47,12 +51,11 @@ export const uploadImage = async (
     let finalImageUrl = '';
     if (fileName && fileName.trim() !== '') {
       const baseUrls: { [key: string]: string } = {
-        usuario: 'https://back-ad-1.onrender.com:10000/uploads/usuarios/',
-        dj: 'https://back-ad-1.onrender.com:10000/uploads/djs/',
-        barra: 'https://back-ad-1.onrender.com:10000/uploads/barras/',
-        salon: 'https://back-ad-1.onrender.com:10000/uploads/salones/',
-        gastronomico:
-          'https://back-ad-1.onrender.com:10000/uploads/gastronomicos/',
+        usuario: `${import.meta.env.VITE_API_URL}/uploads/usuarios/`,
+        dj: `${import.meta.env.VITE_API_URL}/uploads/djs/`,
+        barra: `${import.meta.env.VITE_API_URL}/uploads/barras/`,
+        salon: `${import.meta.env.VITE_API_URL}/uploads/salones/`,
+        gastronomico: `${import.meta.env.VITE_API_URL}/uploads/gastronomicos/`,
       };
 
       const baseUrl = baseUrls[entityType];
@@ -124,16 +127,16 @@ export const processUserImageUrl = (
 
   // Si es solo el nombre del archivo, construir la URL completa
   if (imageData && !imageData.includes('/')) {
-    return `https://back-ad-1.onrender.com:10000/uploads/usuarios/${imageData}`;
+    return `${import.meta.env.VITE_API_URL}/uploads/usuarios/${imageData}`;
   }
 
   // Si ya tiene una ruta relativa, agregarle el dominio
   if (imageData.startsWith('/uploads/')) {
-    return `https://back-ad-1.onrender.com:10000${imageData}`;
+    return `${import.meta.env.VITE_API_URL}${imageData}`;
   }
 
   // En cualquier otro caso, asumir que es un nombre de archivo
-  return `https://back-ad-1.onrender.com:10000/uploads/usuarios/${imageData}`;
+  return `${import.meta.env.VITE_API_URL}/uploads/usuarios/${imageData}`;
 };
 
 // Funciones específicas para cada entidad

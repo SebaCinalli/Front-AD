@@ -99,17 +99,17 @@ export function Barra() {
     // Si ya es una URL completa, devolverla tal como está
     if (fileName.startsWith('http')) return fileName;
     // Si es solo el nombre del archivo, construir la URL completa
-    return `http://localhost:10000/uploads/barras/${fileName}`;
+    return `${import.meta.env.VITE_API_URL}/uploads/barras/${fileName}`;
   };
 
   useEffect(() => {
     const fetchBarras = async () => {
       try {
         const url = fechaDMY
-          ? `http://localhost:10000/api/barra?fecha=${encodeURIComponent(
+          ? `${import.meta.env.VITE_API_URL}/api/barra?fecha=${encodeURIComponent(
               fechaDMY
             )}`
-          : 'http://localhost:10000/api/barra';
+          : '${import.meta.env.VITE_API_URL}/api/barra';
         const response = await axios.get(url, {
           withCredentials: true,
         });
@@ -129,7 +129,7 @@ export function Barra() {
 
     const fetchZonas = async () => {
       try {
-        const response = await axios.get('http://localhost:10000/api/zona', {
+        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/zona', {
           withCredentials: true,
         });
         const data = response.data.data;
