@@ -35,7 +35,7 @@ export const UserProvider = ({ children }: { children: ReactElement }) => {
     try {
       // Llamar al endpoint de logout del servidor para limpiar las cookies
       await axios.post(
-        'http://localhost:3000/api/usuario/logout',
+        'https://back-ad-1.onrender.com/api/usuario/logout',
         {},
         { withCredentials: true }
       );
@@ -51,7 +51,7 @@ export const UserProvider = ({ children }: { children: ReactElement }) => {
 
   const checkToken = async () => {
     const response = await axios.post(
-      'http://localhost:3000/api/usuario/verify',
+      'https://back-ad-1.onrender.com/api/usuario/verify',
       {},
       { withCredentials: true }
     );

@@ -52,7 +52,7 @@ export function SolicitudAdmin() {
       try {
         setLoading(true);
         const response = await axios.get(
-          'http://localhost:3000/api/solicitud',
+          'http://localhost:10000/api/solicitud',
           {
             withCredentials: true,
           }
@@ -105,7 +105,7 @@ export function SolicitudAdmin() {
     if (confirmacion) {
       try {
         await axios.delete(
-          `http://localhost:3000/api/solicitud/${solicitudId}`,
+          `http://localhost:10000/api/solicitud/${solicitudId}`,
           { withCredentials: true }
         );
 
@@ -140,7 +140,7 @@ export function SolicitudAdmin() {
       if (solicitudEstado !== 'Rechazada') {
         try {
           await axios.put(
-            `http://localhost:3000/api/solicitud/${solicitudId}`,
+            `http://localhost:10000/api/solicitud/${solicitudId}`,
             { estado: 'Rechazado' },
             { withCredentials: true }
           );
@@ -159,7 +159,7 @@ export function SolicitudAdmin() {
       } else if (solicitudEstado === 'Rechazada') {
         try {
           await axios.put(
-            `http://localhost:3000/api/solicitud/${solicitudId}`,
+            `http://localhost:10000/api/solicitud/${solicitudId}`,
             { estado: 'Pendiente de pago' },
             { withCredentials: true }
           );

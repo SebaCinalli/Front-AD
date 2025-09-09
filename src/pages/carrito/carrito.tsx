@@ -17,7 +17,7 @@ export const Carrito: React.FC = () => {
   const buildImageUrl = (fileName: string | undefined, type: string) => {
     if (!fileName) return '/placeholder-image.svg';
     if (fileName.startsWith('http')) return fileName;
-    return `http://localhost:3000/uploads/${type}s/${fileName}`;
+    return `http://localhost:10000/uploads/${type}s/${fileName}`;
   };
 
   const getTypeDisplayName = (type: string) => {
@@ -101,7 +101,7 @@ export const Carrito: React.FC = () => {
 
       // Enviar la solicitud al backend
       const response = await axios.post(
-        'http://localhost:3000/api/solicitud',
+        'http://localhost:10000/api/solicitud',
         solicitudData,
         { withCredentials: true }
       );

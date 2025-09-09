@@ -11,12 +11,12 @@ export const uploadImage = async (
     formData.append('imagen', file);
 
     console.log(
-      `Subiendo imagen a: http://localhost:3000/api/${entityType}/${entityId}/upload-image`
+      `Subiendo imagen a: https://back-ad-1.onrender.com:10000/api/${entityType}/${entityId}/upload-image`
     );
     console.log('Archivo:', file.name, file.size, file.type);
 
     const response = await axios.post(
-      `http://localhost:3000/api/${entityType}/${entityId}/upload-image`,
+      `https://back-ad-1.onrender.com:10000/api/${entityType}/${entityId}/upload-image`,
       formData,
       {
         withCredentials: true, // Enviar cookies de sesión
@@ -47,11 +47,12 @@ export const uploadImage = async (
     let finalImageUrl = '';
     if (fileName && fileName.trim() !== '') {
       const baseUrls: { [key: string]: string } = {
-        usuario: 'http://localhost:3000/uploads/usuarios/',
-        dj: 'http://localhost:3000/uploads/djs/',
-        barra: 'http://localhost:3000/uploads/barras/',
-        salon: 'http://localhost:3000/uploads/salones/',
-        gastronomico: 'http://localhost:3000/uploads/gastronomicos/',
+        usuario: 'https://back-ad-1.onrender.com:10000/uploads/usuarios/',
+        dj: 'https://back-ad-1.onrender.com:10000/uploads/djs/',
+        barra: 'https://back-ad-1.onrender.com:10000/uploads/barras/',
+        salon: 'https://back-ad-1.onrender.com:10000/uploads/salones/',
+        gastronomico:
+          'https://back-ad-1.onrender.com:10000/uploads/gastronomicos/',
       };
 
       const baseUrl = baseUrls[entityType];
@@ -123,16 +124,16 @@ export const processUserImageUrl = (
 
   // Si es solo el nombre del archivo, construir la URL completa
   if (imageData && !imageData.includes('/')) {
-    return `http://localhost:3000/uploads/usuarios/${imageData}`;
+    return `https://back-ad-1.onrender.com:10000/uploads/usuarios/${imageData}`;
   }
 
   // Si ya tiene una ruta relativa, agregarle el dominio
   if (imageData.startsWith('/uploads/')) {
-    return `http://localhost:3000${imageData}`;
+    return `https://back-ad-1.onrender.com:10000${imageData}`;
   }
 
   // En cualquier otro caso, asumir que es un nombre de archivo
-  return `http://localhost:3000/uploads/usuarios/${imageData}`;
+  return `https://back-ad-1.onrender.com:10000/uploads/usuarios/${imageData}`;
 };
 
 // Funciones específicas para cada entidad

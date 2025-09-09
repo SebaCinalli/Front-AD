@@ -96,15 +96,17 @@ export function Dj() {
     // Si ya es una URL completa, devolverla tal como está
     if (fileName.startsWith('http')) return fileName;
     // Si es solo el nombre del archivo, construir la URL completa
-    return `http://localhost:3000/uploads/djs/${fileName}`;
+    return `http://localhost:10000/uploads/djs/${fileName}`;
   };
 
   useEffect(() => {
     const fetchDjs = async () => {
       try {
         const url = fechaDMY
-          ? `http://localhost:3000/api/dj?fecha=${encodeURIComponent(fechaDMY)}`
-          : 'http://localhost:3000/api/dj';
+          ? `http://localhost:10000/api/dj?fecha=${encodeURIComponent(
+              fechaDMY
+            )}`
+          : 'http://localhost:10000/api/dj';
         const response = await axios.get(url, {
           withCredentials: true,
         });
@@ -118,7 +120,7 @@ export function Dj() {
 
     const fetchZonas = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/zona', {
+        const response = await axios.get('http://localhost:10000/api/zona', {
           withCredentials: true,
         });
         const data = response.data.data;

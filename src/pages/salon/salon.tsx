@@ -102,17 +102,17 @@ export function Salon() {
     // Si ya es una URL completa, devolverla tal como está
     if (fileName.startsWith('http')) return fileName;
     // Si es solo el nombre del archivo, construir la URL completa
-    return `http://localhost:3000/uploads/salones/${fileName}`;
+    return `https://back-ad-1.onrender.com:10000/uploads/salones/${fileName}`;
   };
 
   useEffect(() => {
     const fetchSalones = async () => {
       try {
         const url = fechaDMY
-          ? `http://localhost:3000/api/salon?fecha=${encodeURIComponent(
+          ? `https://back-ad-1.onrender.com:10000/api/salon?fecha=${encodeURIComponent(
               fechaDMY
             )}`
-          : 'http://localhost:3000/api/salon';
+          : 'https://back-ad-1.onrender.com:10000/api/salon';
         const response = await axios.get(url, {
           withCredentials: true,
         });
@@ -126,9 +126,12 @@ export function Salon() {
 
     const fetchZonas = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/zona', {
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          'https://back-ad-1.onrender.com:10000/api/zona',
+          {
+            withCredentials: true,
+          }
+        );
         const data = response.data.data;
 
         // Extraer todas las zonas disponibles del sistema con validación

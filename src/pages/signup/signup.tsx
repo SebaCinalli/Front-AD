@@ -54,9 +54,13 @@ const CreateUser = () => {
     const { confirmPassword, ...userdata } = formData;
 
     console.log('Form submitted:', userdata);
-    await axios.post('http://localhost:3000/api/usuario/register', userdata, {
-      withCredentials: true,
-    });
+    await axios.post(
+      'https://back-ad-1.onrender.com:10000/api/usuario/register',
+      userdata,
+      {
+        withCredentials: true,
+      }
+    );
     navigate('/login');
   };
 

@@ -35,7 +35,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:3000/api/usuario/login',
+        'http://localhost:10000/api/usuario/login',
         { email, password },
         { withCredentials: true }
       );
@@ -166,9 +166,7 @@ const Login = () => {
               type="button"
               className="forgot-password-link"
               onClick={() =>
-                alert(
-                  'No se puede hacer nada, la proxima no seas tan boludo.'
-                )
+                alert('No se puede hacer nada, la proxima no seas tan boludo.')
               }
             >
               Olvidaste tu contraseña?

@@ -53,7 +53,7 @@ export function Solicitud() {
       try {
         setLoading(true);
         const response = await axios.get(
-          'http://localhost:3000/api/solicitud',
+          'https://back-ad-1.onrender.com:10000/api/solicitud',
           {
             withCredentials: true,
           }
@@ -116,7 +116,7 @@ export function Solicitud() {
   const handleGuardarCambios = async (solicitudId: number) => {
     try {
       await axios.put(
-        `http://localhost:3000/api/solicitud/${solicitudId}`,
+        `https://back-ad-1.onrender.com:10000/api/solicitud/${solicitudId}`,
         { estado: nuevoEstado },
         { withCredentials: true }
       );
@@ -157,7 +157,7 @@ export function Solicitud() {
     if (confirmacion) {
       try {
         await axios.put(
-          `http://localhost:3000/api/solicitud/${solicitudId}`,
+          `https://back-ad-1.onrender.com:10000/api/solicitud/${solicitudId}`,
           { estado: 'Cancelada' },
           { withCredentials: true }
         );

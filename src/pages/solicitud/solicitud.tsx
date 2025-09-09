@@ -63,9 +63,12 @@ export function Solicitud() {
   const fetchSolicitudes = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:3000/api/solicitud', {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        'https://back-ad-1.onrender.com:10000/api/solicitud',
+        {
+          withCredentials: true,
+        }
+      );
       // Filtrar solo las solicitudes del usuario actual
       const todasLasSolicitudes = response.data.data || [];
       const solicitudesDelUsuario = todasLasSolicitudes.filter(
@@ -97,16 +100,16 @@ export function Solicitud() {
       console.log('Iniciando fetchServiciosDisponibles...');
       const [djResponse, salonResponse, barraResponse, gastronomicoResponse] =
         await Promise.all([
-          axios.get('http://localhost:3000/api/dj', {
+          axios.get('https://back-ad-1.onrender.com:10000/api/dj', {
             withCredentials: true,
           }),
-          axios.get('http://localhost:3000/api/salon', {
+          axios.get('https://back-ad-1.onrender.com:10000/api/salon', {
             withCredentials: true,
           }),
-          axios.get('http://localhost:3000/api/barra', {
+          axios.get('https://back-ad-1.onrender.com:10000/api/barra', {
             withCredentials: true,
           }),
-          axios.get('http://localhost:3000/api/gastronomico', {
+          axios.get('https://back-ad-1.onrender.com:10000/api/gastronomico', {
             withCredentials: true,
           }),
         ]);
@@ -180,7 +183,7 @@ export function Solicitud() {
     if (confirmacion) {
       try {
         await axios.put(
-          `http://localhost:3000/api/solicitud/${solicitudId}`,
+          `https://back-ad-1.onrender.com:10000/api/solicitud/${solicitudId}`,
           { estado: 'Cancelada' },
           { withCredentials: true }
         );
@@ -252,7 +255,7 @@ export function Solicitud() {
       console.log('Datos enviados al backend:', updateData);
 
       const updateResponse = await axios.put(
-        `http://localhost:3000/api/solicitud/${solicitudId}`,
+        `https://back-ad-1.onrender.com:10000/api/solicitud/${solicitudId}`,
         updateData,
         {
           withCredentials: true,
