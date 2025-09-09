@@ -8,7 +8,7 @@ import './userbadge.css';
 export const UserBadge = () => {
   const { user, logout } = useUser();
   const { getItemCount } = useCart();
-  const { clearEventDate } = useEventDate();
+  const { setEventDate } = useEventDate();
   const navigate = useNavigate();
   const [imageError, setImageError] = useState(false);
 
@@ -17,7 +17,7 @@ export const UserBadge = () => {
   const handleLogout = () => {
     logout();
     // Limpiar también la fecha persistida para no arrastrarla a otro login
-    clearEventDate();
+    setEventDate(null);
   };
 
   const handleCartClick = () => {
