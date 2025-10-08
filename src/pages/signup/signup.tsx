@@ -24,6 +24,7 @@ const CreateUser = () => {
   const [confPassError, setConfPassError] = useState('');
   const [nameError, setNameError] = useState('');
   const [apeError, setApeError] = useState('');
+  const [telefonoError, setTelefonoError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -54,14 +55,18 @@ const CreateUser = () => {
     const { confirmPassword, ...userdata } = formData;
 
     console.log('Form submitted:', userdata);
-    await axios.post(
-      `${import.meta.env.VITE_API_URL}/api/usuario/register`,
-      userdata,
-      {
-        withCredentials: true,
-      }
-    );
-    navigate('/login');
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/usuario/register`,
+        userdata,
+        {
+          withCredentials: true,
+        }
+      );
+      navigate('/login');
+    } catch (err: any) {
+      console.error('Error registrando usuario:', err?.response || err);
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -80,7 +85,7 @@ const CreateUser = () => {
           <p className="signup-subtitle">Completa los datos para empezar</p>
         </div>
 
-        <form className="signup-form" onSubmit={handleSubmit}>
+        <form className="signup-form" onSubmit={handleSubmit} noValidate>
           <div>
             <div className="form-group">
               <label className="form-label" htmlFor="nombre">
@@ -104,7 +109,13 @@ const CreateUser = () => {
                   type="text"
                   id="nombre"
                   name="nombre"
-                  className="form-input"
+                  className={`form-input ${
+                    formData.nombre
+                      ? nameError
+                        ? 'input-error'
+                        : 'input-success'
+                      : ''
+                  }`}
                   value={formData.nombre}
                   onChange={(e) => {
                     handleChange(e);
@@ -143,7 +154,13 @@ const CreateUser = () => {
                   type="text"
                   id="apellido"
                   name="apellido"
-                  className="form-input"
+                  className={`form-input ${
+                    formData.apellido
+                      ? apeError
+                        ? 'input-error'
+                        : 'input-success'
+                      : ''
+                  }`}
                   value={formData.apellido}
                   onChange={(e) => {
                     handleChange(e);
@@ -174,20 +191,43 @@ const CreateUser = () => {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-2A17 17 0 013 5z"
                 />
               </svg>
               <input
                 type="text"
+                inputMode="numeric"
                 id="telefono"
                 name="telefono"
-                className="form-input"
+                className={`form-input ${
+                  formData.telefono
+                    ? telefonoError
+                      ? 'input-error'
+                      : 'input-success'
+                    : ''
+                }`}
                 value={formData.telefono}
-                onChange={handleChange}
+                onChange={(e) => {
+                  // Permitimos solo dígitos, descartamos cualquier otro carácter
+                  const raw = e.target.value;
+                  const soloDigitos = raw.replace(/\D+/g, '');
+                  setFormData((prev) => ({ ...prev, telefono: soloDigitos }));
+                  // Validación básica: entre 7 y 15 dígitos
+                  if (!soloDigitos) {
+                    setTelefonoError('El teléfono es requerido');
+                  } else if (soloDigitos.length < 7) {
+                    setTelefonoError('Debe tener al menos 7 dígitos');
+                  } else if (soloDigitos.length > 15) {
+                    setTelefonoError('Máximo 15 dígitos');
+                  } else {
+                    setTelefonoError('');
+                  }
+                }}
                 required
-                placeholder="Ingresa tu telefono"
+                placeholder="Ingresa tu teléfono"
               />
             </div>
+            {telefonoError && <div className="error-text">{telefonoError}</div>}
           </div>
 
           <div className="form-group">
@@ -212,7 +252,9 @@ const CreateUser = () => {
                 type="text"
                 id="nombreUsuario"
                 name="nombreUsuario"
-                className="form-input"
+                className={`form-input ${
+                  formData.nombreUsuario ? 'input-success' : ''
+                }`}
                 value={formData.nombreUsuario}
                 onChange={handleChange}
                 required
@@ -244,7 +286,13 @@ const CreateUser = () => {
                   type="text"
                   id="email"
                   name="email"
-                  className="form-input"
+                  className={`form-input ${
+                    formData.email
+                      ? emailError
+                        ? 'input-error'
+                        : 'input-success'
+                      : ''
+                  }`}
                   value={formData.email}
                   onChange={(e) => {
                     const val = e.target.value;
@@ -283,14 +331,19 @@ const CreateUser = () => {
                   type={showPassword ? 'text' : 'password'}
                   id="password"
                   name="password"
-                  className="form-input"
+                  className={`form-input ${
+                    formData.password
+                      ? passError
+                        ? 'input-error'
+                        : 'input-success'
+                      : ''
+                  }`}
                   value={formData.password}
                   onChange={(e) => {
                     handleChange(e);
                     const val = e.target.value;
                     const { isValid, passError } = validateFormPass(val);
                     setPassError(isValid ? '' : passError);
-                    // Si se modifica la contraseña, verificamos coincidencia
                     if (formData.confirmPassword) {
                       setConfPassError(
                         e.target.value === formData.confirmPassword
@@ -307,6 +360,7 @@ const CreateUser = () => {
                   className="toggle-password"
                   onClick={togglePasswordVisibility}
                   aria-label="Mostrar/Ocultar contraseña"
+                  tabIndex={-1}
                 >
                   {showPassword ? (
                     <svg
@@ -319,7 +373,7 @@ const CreateUser = () => {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878l4.242 4.242"
                       />
                     </svg>
                   ) : (
@@ -371,7 +425,13 @@ const CreateUser = () => {
                 type={showConfirmPassword ? 'text' : 'password'}
                 id="confirmPassword"
                 name="confirmPassword"
-                className="form-input"
+                className={`form-input ${
+                  formData.confirmPassword
+                    ? confPassError
+                      ? 'input-error'
+                      : 'input-success'
+                    : ''
+                }`}
                 value={formData.confirmPassword}
                 onChange={(e) => {
                   handleChange(e);
@@ -389,6 +449,7 @@ const CreateUser = () => {
                 className="toggle-password"
                 onClick={toggleConfirmPasswordVisibility}
                 aria-label="Mostrar/Ocultar confirmación de contraseña"
+                tabIndex={-1}
               >
                 {showConfirmPassword ? (
                   <svg
@@ -401,7 +462,7 @@ const CreateUser = () => {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878l4.242 4.242"
                     />
                   </svg>
                 ) : (
