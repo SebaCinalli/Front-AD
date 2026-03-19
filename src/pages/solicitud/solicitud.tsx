@@ -6,6 +6,10 @@ import { BackToMenu } from '../../components/BackToMenu';
 import { useUser } from '../../context/usercontext';
 import { useAlert } from '../../context/alertcontext';
 import { useConfirm } from '../../context/confirmcontext';
+import {
+  paymentService,
+  type PaymentItem,
+} from '../../services/paymentService';
 
 interface Solicitud {
   id: number;
@@ -63,6 +67,81 @@ export function Solicitud() {
     gastronomicoId?: number | null;
   }>({});
   const { user } = useUser();
+  const [solicitudPagandoId, setSolicitudPagandoId] = useState<number | null>(
+    null,
+  );
+
+  const normalizarEstado = (estado: string) => estado?.trim().toLowerCase();
+
+  const esPendienteDePago = (estado: string) =>
+    normalizarEstado(estado) === 'pendiente de pago';
+
+  const esFechaPasada = (fechaString: string) => {
+    const fechaEvento = new Date(fechaString);
+    if (Number.isNaN(fechaEvento.getTime())) {
+      return true;
+    }
+
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    const fechaEventoSoloDia = new Date(fechaEvento);
+    fechaEventoSoloDia.setHours(0, 0, 0, 0);
+
+    return fechaEventoSoloDia < hoy;
+  };
+
+  const puedePagar = (solicitud: Solicitud) =>
+    esPendienteDePago(solicitud.estado) &&
+    !esFechaPasada(solicitud.fechaEvento);
+
+  const getPaymentItemsFromSolicitud = (
+    solicitud: Solicitud,
+  ): PaymentItem[] => {
+    const items: PaymentItem[] = [];
+
+    if (solicitud.dj && solicitud.montoDj && solicitud.montoDj > 0) {
+      items.push({
+        id: `dj-${solicitud.dj.id}-sol-${solicitud.id}`,
+        title: `Solicitud #${solicitud.id} - DJ ${solicitud.dj.nombreArtistico}`,
+        quantity: 1,
+        unit_price: solicitud.montoDj,
+      });
+    }
+
+    if (solicitud.salon && solicitud.montoSalon && solicitud.montoSalon > 0) {
+      items.push({
+        id: `salon-${solicitud.salon.id}-sol-${solicitud.id}`,
+        title: `Solicitud #${solicitud.id} - Salón ${solicitud.salon.nombre}`,
+        quantity: 1,
+        unit_price: solicitud.montoSalon,
+      });
+    }
+
+    if (solicitud.barra && solicitud.montoBarra && solicitud.montoBarra > 0) {
+      items.push({
+        id: `barra-${solicitud.barra.id}-sol-${solicitud.id}`,
+        title: `Solicitud #${solicitud.id} - Barra ${solicitud.barra.nombreB}`,
+        quantity: 1,
+        unit_price: solicitud.montoBarra,
+      });
+    }
+
+    if (
+      solicitud.gastronomico &&
+      solicitud.montoGastro &&
+      solicitud.montoGastro > 0
+    ) {
+      items.push({
+        id: `gastronomico-${solicitud.gastronomico.id}-sol-${solicitud.id}`,
+        title: `Solicitud #${solicitud.id} - Gastronómico ${solicitud.gastronomico.nombreG}`,
+        quantity: 1,
+        unit_price: solicitud.montoGastro,
+      });
+    }
+
+    return items;
+  };
 
   const fetchSolicitudes = async () => {
     try {
@@ -71,19 +150,19 @@ export function Solicitud() {
         `${import.meta.env.VITE_API_URL}/api/solicitud`,
         {
           withCredentials: true,
-        }
+        },
       );
       // Filtrar solo las solicitudes del usuario actual
       const todasLasSolicitudes = response.data.data || [];
       const solicitudesDelUsuario = todasLasSolicitudes.filter(
-        (solicitud: Solicitud) => solicitud.usuario.id === user?.id
+        (solicitud: Solicitud) => solicitud.usuario.id === user?.id,
       );
       setSolicitudes(solicitudesDelUsuario);
       setError(null);
     } catch (error: any) {
       console.error('Error al cargar solicitudes:', error);
       setError(
-        error.response?.data?.message || 'Error al cargar las solicitudes'
+        error.response?.data?.message || 'Error al cargar las solicitudes',
       );
     } finally {
       setLoading(false);
@@ -163,7 +242,7 @@ export function Solicitud() {
       'Longitud:',
       estado.length,
       'Puede editar:',
-      estado === 'Pendiente de pago'
+      estado === 'Pendiente de pago',
     );
     // Hacer comparación más tolerante
     const estadoNormalizado = estado?.trim().toLowerCase();
@@ -174,14 +253,51 @@ export function Solicitud() {
       'Estado normalizado:',
       `"${estadoNormalizado}"`,
       'Resultado final:',
-      puedeEditarResult
+      puedeEditarResult,
     );
     return puedeEditarResult;
   };
 
+  const handlePagarSolicitud = async (solicitud: Solicitud) => {
+    if (!puedePagar(solicitud)) {
+      showAlert(
+        'Solo podés pagar solicitudes pendientes de pago con fecha vigente.',
+        'warning',
+      );
+      return;
+    }
+
+    try {
+      setSolicitudPagandoId(solicitud.id);
+
+      const paymentItems = getPaymentItemsFromSolicitud(solicitud);
+      if (paymentItems.length === 0) {
+        showAlert('No hay ítems válidos para procesar el pago.', 'warning');
+        return;
+      }
+
+      const response = await paymentService.createPayment(paymentItems);
+
+      if (!response.init_point) {
+        showAlert('No se pudo obtener la URL de pago.', 'error');
+        return;
+      }
+
+      window.location.href = response.init_point;
+    } catch (error: any) {
+      console.error('Error al iniciar pago de solicitud:', error);
+      showAlert(
+        `Error al procesar el pago: ${error.message || 'Error desconocido'}`,
+        'error',
+      );
+    } finally {
+      setSolicitudPagandoId(null);
+    }
+  };
+
   const handleCancelarSolicitud = async (solicitudId: number) => {
     const confirmacion = await showConfirm(
-      '¿Estás seguro de que deseas cancelar esta solicitud?\n\nEsta acción cambiará el estado a "Cancelada".'
+      '¿Estás seguro de que deseas cancelar esta solicitud?\n\nEsta acción cambiará el estado a "Cancelada".',
     );
 
     if (confirmacion) {
@@ -189,14 +305,14 @@ export function Solicitud() {
         await axios.put(
           `${import.meta.env.VITE_API_URL}/api/solicitud/${solicitudId}`,
           { estado: 'Cancelada' },
-          { withCredentials: true }
+          { withCredentials: true },
         );
 
         // Actualizar la lista local
         setSolicitudes(
           solicitudes.map((s) =>
-            s.id === solicitudId ? { ...s, estado: 'Cancelada' } : s
-          )
+            s.id === solicitudId ? { ...s, estado: 'Cancelada' } : s,
+          ),
         );
 
         showAlert('Solicitud cancelada exitosamente', 'success');
@@ -205,7 +321,7 @@ export function Solicitud() {
         showAlert(
           'Error al cancelar la solicitud: ' +
             (error.response?.data?.message || 'Error desconocido'),
-          'error'
+          'error',
         );
       }
     }
@@ -267,7 +383,7 @@ export function Solicitud() {
           headers: {
             'Content-Type': 'application/json',
           },
-        }
+        },
       );
 
       console.log('Respuesta exitosa del backend:', updateResponse.data);
@@ -458,13 +574,35 @@ export function Solicitud() {
                             Cancelar
                           </button>
                           <button
+                            className={`btn-pagar-solicitud ${
+                              !puedePagar(solicitud) ||
+                              solicitudPagandoId === solicitud.id
+                                ? 'disabled'
+                                : ''
+                            }`}
+                            onClick={() => handlePagarSolicitud(solicitud)}
+                            disabled={
+                              !puedePagar(solicitud) ||
+                              solicitudPagandoId === solicitud.id
+                            }
+                            title={
+                              esFechaPasada(solicitud.fechaEvento)
+                                ? 'No se puede pagar una solicitud con fecha pasada'
+                                : 'Pagar solicitud'
+                            }
+                          >
+                            {solicitudPagandoId === solicitud.id
+                              ? 'Procesando...'
+                              : 'Pagar'}
+                          </button>
+                          <button
                             className={`btn-editar-servicios ${
                               !puedeEditar(solicitud.estado) ? 'disabled' : ''
                             }`}
                             onClick={() => {
                               console.log(
                                 'Botón Editar Servicios clickeado para solicitud:',
-                                solicitud.id
+                                solicitud.id,
                               );
                               handleEditarServicios(solicitud.id);
                             }}
@@ -534,7 +672,7 @@ export function Solicitud() {
                                       ? salon.montoS.toLocaleString('es-AR')
                                       : 'Sin precio'}
                                   </option>
-                                )
+                                ),
                               )}
                             </select>
                           </div>
@@ -592,7 +730,7 @@ export function Solicitud() {
                                       ? gastro.montoG.toLocaleString('es-AR')
                                       : 'Sin precio'}
                                   </option>
-                                )
+                                ),
                               )}
                             </select>
                           </div>
