@@ -11,7 +11,14 @@ export interface CreatePaymentResponse {
   init_point: string;
 }
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || '';
+
+const API_BASE = API_URL.replace(/\/+$/, '');
+const API_PREFIX = API_BASE
+  ? API_BASE.endsWith('/api')
+    ? API_BASE
+    : `${API_BASE}/api`
+  : '/api';
 
 export const paymentService = {
   /**
@@ -24,7 +31,7 @@ export const paymentService = {
   ): Promise<CreatePaymentResponse> => {
     try {
       const response = await axios.post(
-        `${API_URL}/api/payment/create-payment`,
+        `${API_PREFIX}/payment/create-payment`,
         { items },
         { withCredentials: true },
       );
