@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useCart } from '../../context/cartcontext';
 import { UserBadge } from '../../components/userbadge';
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +7,7 @@ import axios from 'axios';
 import './carrito.css';
 import { useEventDate } from '../../context/eventdatecontext';
 import { useAlert } from '../../context/alertcontext';
+import { paymentService } from '../../services/paymentService';
 
 export const Carrito: React.FC = () => {
   const { items, removeItem, clearCart, getTotalPrice, getItemCount } =
@@ -15,6 +16,7 @@ export const Carrito: React.FC = () => {
   const navigate = useNavigate();
   const { eventDate } = useEventDate();
   const { showAlert } = useAlert();
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const buildImageUrl = (fileName: string | undefined, type: string) => {
     if (!fileName) return '/placeholder-image.svg';
@@ -56,6 +58,7 @@ export const Carrito: React.FC = () => {
       navigate('/');
       return;
     }
+setIsProcessing(true);
 
     try {
       // Helpers para formatear fechas a DD/MM/YYYY
@@ -110,9 +113,10 @@ export const Carrito: React.FC = () => {
       );
 
       if (response.status === 201 || response.status === 200) {
-        showAlert('¡Solicitud creada exitosamente! Estado: Pendiente de pago', 'success');
-        clearCart(); // Limpiar el carrito después de crear la solicitud
-        navigate('/'); // Redirigir al menú principal
+        showAlert('¡Solicitud creada exitosamente!', 'success');
+        
+        // Proceder con el pago
+        await handlePayment();
       }
     } catch (error: any) {
       console.error('Error al crear la solicitud:', error);
@@ -123,6 +127,37 @@ export const Carrito: React.FC = () => {
         'Error al crear la solicitud';
 
       showAlert(`Error: ${errorMessage}`, 'error');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handlePayment = async () => {
+    try {
+      // Formatear los items para MercadoPago
+      const paymentItems = paymentService.formatCartItemsForPayment(items);
+
+      console.log('Enviando items a MercadoPago:', paymentItems);
+
+      // Crear la preferencia de pago en MercadoPago
+      const response = await paymentService.createPayment(paymentItems);
+
+      if (response.init_point) {
+        // Limpiar el carrito antes de redirigir
+        clearCart();
+        
+        // Redirigir a MercadoPago
+        window.location.href = response.init_point;
+      } else {
+        showAlert('Error: No se pudo obtener la URL de pago', 'error');
+      }
+    } catch (error: any) {
+      console.error('Error al procesar el pago:', error);
+      const errorMessage =
+        error.message || 'Error al procesar el pago';
+      showAlert(`Error: ${errorMessage}`, 'error');
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -247,14 +282,16 @@ export const Carrito: React.FC = () => {
                   <button
                     className="continuar-comprando-btn secondary"
                     onClick={() => navigate('/')}
+                    disabled={isProcessing}
                   >
                     Continuar Comprando
                   </button>
                   <button
                     className="proceder-solicitud-btn"
                     onClick={handleProceedToCheckout}
+                    disabled={isProcessing}
                   >
-                    Proceder con Solicitud
+                    {isProcessing ? 'Procesando...' : 'Proceder al Pago'}
                   </button>
                 </div>
               </div>

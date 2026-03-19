@@ -10,6 +10,7 @@ import { Barra } from '../pages/barra/barra';
 import { Dj } from '../pages/dj/dj';
 import { Gastronomico } from '../pages/gastronomico/gastronomico';
 import { Carrito } from '../pages/carrito/carrito';
+import { Resultado } from '../pages/resultado/resultado';
 import { SolicitudAdmin } from '../pages/admin/solicitud/solicitudAdmin';
 import { SalonAdmin } from '../pages/admin/salon/salonAdmin';
 import { BarraAdmin } from '../pages/admin/barra/barraAdmin';
@@ -88,6 +89,15 @@ export default function AppRoutes() {
         element={
           <ProtectedRoutes>
             <Carrito />
+          </ProtectedRoutes>
+        }
+      />
+
+      <Route
+        path="/resultado"
+        element={
+          <ProtectedRoutes>
+            <Resultado />
           </ProtectedRoutes>
         }
       />
