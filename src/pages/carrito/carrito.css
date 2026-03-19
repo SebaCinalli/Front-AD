@@ -126,7 +126,8 @@
 }
 
 .carrito-item:hover {
-  box-shadow: 0 5px 20px rgba(52, 152, 219, 0.1),
+  box-shadow:
+    0 5px 20px rgba(52, 152, 219, 0.1),
     0 0 15px rgba(52, 152, 219, 0.05);
   transform: translateY(-2px);
   background: #2a2a47;
@@ -320,6 +321,19 @@
   backdrop-filter: blur(15px);
 }
 
+.proceder-solicitud-btn:disabled,
+.continuar-comprando-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.proceder-solicitud-btn:disabled:hover,
+.continuar-comprando-btn:disabled:hover {
+  box-shadow: none;
+  transform: none;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .carrito-container {
@@ -410,7 +424,9 @@
 .total-section,
 .carrito-resumen,
 .carrito-info {
-  transition: background-color 0.3s ease, border-color 0.3s ease,
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
     color 0.3s ease;
 }
 
