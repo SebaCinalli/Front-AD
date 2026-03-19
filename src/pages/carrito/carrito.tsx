@@ -53,12 +53,12 @@ export const Carrito: React.FC = () => {
     if (!eventDate) {
       showAlert(
         'Seleccioná una fecha para tu evento desde el menú principal antes de continuar.',
-        'warning'
+        'warning',
       );
       navigate('/');
       return;
     }
-setIsProcessing(true);
+    setIsProcessing(true);
 
     try {
       // Helpers para formatear fechas a DD/MM/YYYY
@@ -109,12 +109,12 @@ setIsProcessing(true);
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/solicitud`,
         solicitudData,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (response.status === 201 || response.status === 200) {
         showAlert('¡Solicitud creada exitosamente!', 'success');
-        
+
         // Proceder con el pago
         await handlePayment();
       }
@@ -145,7 +145,7 @@ setIsProcessing(true);
       if (response.init_point) {
         // Limpiar el carrito antes de redirigir
         clearCart();
-        
+
         // Redirigir a MercadoPago
         window.location.href = response.init_point;
       } else {
@@ -153,8 +153,7 @@ setIsProcessing(true);
       }
     } catch (error: any) {
       console.error('Error al procesar el pago:', error);
-      const errorMessage =
-        error.message || 'Error al procesar el pago';
+      const errorMessage = error.message || 'Error al procesar el pago';
       showAlert(`Error: ${errorMessage}`, 'error');
     } finally {
       setIsProcessing(false);
