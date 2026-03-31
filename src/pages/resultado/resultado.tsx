@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { useCart } from '../../context/cartcontext';
 import { useUser } from '../../context/usercontext';
 import { useAlert } from '../../context/alertcontext';
@@ -18,6 +19,66 @@ export const Resultado: React.FC = () => {
   const merchantOrderId = searchParams.get('merchant_order_id');
   const preferenceId = searchParams.get('preference_id');
 
+  const getSolicitudIdFromPaymentContext = () => {
+    const fromQuery = searchParams.get('solicitudId');
+    if (fromQuery && /^\d+$/.test(fromQuery)) {
+      return Number(fromQuery);
+    }
+
+    const fromStorage = localStorage.getItem('pendingPaymentSolicitudId');
+    if (fromStorage && /^\d+$/.test(fromStorage)) {
+      return Number(fromStorage);
+    }
+
+    return null;
+  };
+
+  const resolverSolicitudPendienteMasReciente = async () => {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/api/solicitud`,
+      { withCredentials: true },
+    );
+
+    const todasLasSolicitudes = response.data?.data || [];
+    const estadoNormalizado = (valor: string) => valor?.trim().toLowerCase();
+
+    const delUsuarioActual = user?.id
+      ? todasLasSolicitudes.filter((s: any) => s?.usuario?.id === user.id)
+      : todasLasSolicitudes;
+
+    const pendientesDePago = delUsuarioActual.filter(
+      (s: any) => estadoNormalizado(s?.estado) === 'pendiente de pago',
+    );
+
+    if (pendientesDePago.length === 0) {
+      return null;
+    }
+
+    const ordenadas = [...pendientesDePago].sort(
+      (a: any, b: any) => (b?.id || 0) - (a?.id || 0),
+    );
+
+    return ordenadas[0]?.id ?? null;
+  };
+
+  const marcarSolicitudComoPagada = async () => {
+    let solicitudId = getSolicitudIdFromPaymentContext();
+
+    if (!solicitudId) {
+      solicitudId = await resolverSolicitudPendienteMasReciente();
+    }
+
+    if (!solicitudId) return;
+
+    await axios.put(
+      `${import.meta.env.VITE_API_URL}/api/solicitud/${solicitudId}`,
+      { estado: 'pagado' },
+      { withCredentials: true },
+    );
+
+    localStorage.removeItem('pendingPaymentSolicitudId');
+  };
+
   useEffect(() => {
     // Procesar el resultado del pago
     handlePaymentResult();
@@ -31,12 +92,14 @@ export const Resultado: React.FC = () => {
     try {
       switch (status) {
         case 'success':
+          await marcarSolicitudComoPagada();
           showAlert('¡Pago realizado exitosamente!', 'success');
           // Limpiar el carrito tras pago exitoso
           clearCart();
           break;
 
         case 'failure':
+          localStorage.removeItem('pendingPaymentSolicitudId');
           showAlert(
             'El pago fue rechazado. Por favor, intenta nuevamente.',
             'error',

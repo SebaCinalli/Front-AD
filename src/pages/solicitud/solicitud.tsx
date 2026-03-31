@@ -283,6 +283,9 @@ export function Solicitud() {
         return;
       }
 
+      // Persistimos el id para poder actualizar estado al volver de MercadoPago.
+      localStorage.setItem('pendingPaymentSolicitudId', String(solicitud.id));
+
       window.location.href = response.init_point;
     } catch (error: any) {
       console.error('Error al iniciar pago de solicitud:', error);

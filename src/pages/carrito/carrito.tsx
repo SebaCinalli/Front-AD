@@ -115,8 +115,11 @@ export const Carrito: React.FC = () => {
       if (response.status === 201 || response.status === 200) {
         showAlert('¡Solicitud creada exitosamente!', 'success');
 
+        const solicitudCreadaId =
+          response.data?.data?.id ?? response.data?.id ?? null;
+
         // Proceder con el pago
-        await handlePayment();
+        await handlePayment(solicitudCreadaId);
       }
     } catch (error: any) {
       console.error('Error al crear la solicitud:', error);
@@ -132,7 +135,7 @@ export const Carrito: React.FC = () => {
     }
   };
 
-  const handlePayment = async () => {
+  const handlePayment = async (solicitudId?: number | null) => {
     try {
       // Formatear los items para MercadoPago
       const paymentItems = paymentService.formatCartItemsForPayment(items);
@@ -143,6 +146,13 @@ export const Carrito: React.FC = () => {
       const response = await paymentService.createPayment(paymentItems);
 
       if (response.init_point) {
+        if (solicitudId) {
+          localStorage.setItem(
+            'pendingPaymentSolicitudId',
+            String(solicitudId),
+          );
+        }
+
         // Limpiar el carrito antes de redirigir
         clearCart();
 

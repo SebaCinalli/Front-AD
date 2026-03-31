@@ -163,6 +163,18 @@
   border: 1px solid #2d4a2d;
 }
 
+.estado-pagado {
+  background: #1f3522;
+  color: #8ce99a;
+  border: 1px solid #3f6b47;
+}
+
+.estado-pagada {
+  background: #1f3522;
+  color: #8ce99a;
+  border: 1px solid #3f6b47;
+}
+
 .estado-cancelada {
   background: #2d1b1b;
   color: #ff6b6b;
