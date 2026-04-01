@@ -112,6 +112,8 @@ export const Carrito: React.FC = () => {
         { withCredentials: true },
       );
 
+      console.log('response.data completo:', response.data);
+
       if (response.status === 201 || response.status === 200) {
         showAlert('¡Solicitud creada exitosamente!', 'success');
 
@@ -156,8 +158,8 @@ export const Carrito: React.FC = () => {
         // Limpiar el carrito antes de redirigir
         clearCart();
 
-        // Redirigir a MercadoPago
-        window.location.href = response.init_point;
+        // Abrir MercadoPago en una pestaña nueva
+        window.open(response.init_point, '_blank');
       } else {
         showAlert('Error: No se pudo obtener la URL de pago', 'error');
       }
