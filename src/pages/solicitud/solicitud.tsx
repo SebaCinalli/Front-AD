@@ -178,6 +178,24 @@ export function Solicitud() {
     }
   }, [user?.id]);
 
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const handleRefresh = () => {
+      if (document.visibilityState === 'visible') {
+        fetchSolicitudes();
+      }
+    };
+
+    window.addEventListener('focus', fetchSolicitudes);
+    document.addEventListener('visibilitychange', handleRefresh);
+
+    return () => {
+      window.removeEventListener('focus', fetchSolicitudes);
+      document.removeEventListener('visibilitychange', handleRefresh);
+    };
+  }, [user?.id]);
+
   const fetchServiciosDisponibles = async () => {
     try {
       console.log('Iniciando fetchServiciosDisponibles...');
@@ -276,7 +294,10 @@ export function Solicitud() {
         return;
       }
 
-      const response = await paymentService.createPayment(paymentItems);
+      const response = await paymentService.createPayment(
+        paymentItems,
+        solicitud.id,
+      );
 
       if (!response.init_point) {
         showAlert('No se pudo obtener la URL de pago.', 'error');
@@ -566,12 +587,20 @@ export function Solicitud() {
                         <>
                           <button
                             className={`btn-cancelar-solicitud ${
-                              solicitud.estado === 'Cancelada' ? 'disabled' : ''
+                              normalizarEstado(solicitud.estado) ===
+                                'cancelada' ||
+                              normalizarEstado(solicitud.estado) === 'pagado'
+                                ? 'disabled'
+                                : ''
                             }`}
                             onClick={() =>
                               handleCancelarSolicitud(solicitud.id)
                             }
-                            disabled={solicitud.estado === 'Cancelada'}
+                            disabled={
+                              normalizarEstado(solicitud.estado) ===
+                                'cancelada' ||
+                              normalizarEstado(solicitud.estado) === 'pagado'
+                            }
                             title="Cancelar solicitud"
                           >
                             Cancelar

@@ -145,7 +145,10 @@ export const Carrito: React.FC = () => {
       console.log('Enviando items a MercadoPago:', paymentItems);
 
       // Crear la preferencia de pago en MercadoPago
-      const response = await paymentService.createPayment(paymentItems);
+      const response = await paymentService.createPayment(
+        paymentItems,
+        solicitudId,
+      );
 
       if (response.init_point) {
         if (solicitudId) {

@@ -11,6 +11,14 @@ export interface CreatePaymentResponse {
   init_point: string;
 }
 
+export interface ConfirmPaymentResponse {
+  confirmed: boolean;
+  paymentStatus?: string;
+  solicitudId?: number | null;
+  result?: string;
+  reason?: string;
+}
+
 const API_URL = import.meta.env.VITE_API_URL || '';
 
 const API_BASE = API_URL.replace(/\/+$/, '');
@@ -24,15 +32,22 @@ export const paymentService = {
   /**
    * Crea una preferencia de pago en MercadoPago
    * @param items - Array de items a pagar
+   * @param solicitudId - ID de la solicitud asociada al pago
    * @returns URL de checkout de MercadoPago
    */
   createPayment: async (
     items: PaymentItem[],
+    solicitudId?: number | null,
   ): Promise<CreatePaymentResponse> => {
     try {
+      const payload: { items: PaymentItem[]; solicitudId?: number } = { items };
+      if (typeof solicitudId === 'number' && solicitudId > 0) {
+        payload.solicitudId = solicitudId;
+      }
+
       const response = await axios.post(
         `${API_PREFIX}/payment/create-payment`,
-        { items },
+        payload,
         { withCredentials: true },
       );
       return response.data;
@@ -43,6 +58,21 @@ export const paymentService = {
         'Error al crear el pago';
       throw new Error(errorMessage);
     }
+  },
+
+  /**
+   * Confirma un pago aprobado contra MercadoPago en el backend
+   */
+  confirmPayment: async (params: {
+    paymentId?: string | null;
+    solicitudId?: number | null;
+  }): Promise<ConfirmPaymentResponse> => {
+    const response = await axios.post(
+      `${API_PREFIX}/payment/confirm`,
+      params,
+      { withCredentials: true },
+    );
+    return response.data;
   },
 
   /**

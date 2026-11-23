@@ -18,6 +18,7 @@ type UserContextType = {
   login: (userData: User) => void;
   logout: () => void;
   existsToken: boolean;
+  isAuthLoading: boolean;
   checkToken: () => Promise<void>;
 };
 
@@ -26,9 +27,11 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider = ({ children }: { children: ReactElement }) => {
   const [user, setUser] = useState<User | null>(null);
   const [existsToken, setExistsToken] = useState<boolean>(false);
+  const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
 
   const login = (userData: User) => {
     setUser(userData);
+    setIsAuthLoading(false);
   };
 
   const logout = async () => {
@@ -45,38 +48,46 @@ export const UserProvider = ({ children }: { children: ReactElement }) => {
       // Siempre limpiar el estado local, incluso si falla la llamada al servidor
       setUser(null);
       setExistsToken(false);
+      setIsAuthLoading(false);
       // No limpiamos aquí eventDate para evitar acoplamiento; se hace en UI al invocar logout
     }
   };
 
   const checkToken = async () => {
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_URL}/api/usuario/verify`,
-      {},
-      { withCredentials: true }
-    );
-    if (response.status === 200 && response.data) {
-      console.log('Datos del usuario desde checkToken:', response.data.user);
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/usuario/verify`,
+        {},
+        { withCredentials: true }
+      );
+      if (response.status === 200 && response.data) {
+        console.log('Datos del usuario desde checkToken:', response.data.user);
 
-      const processedImageUrl = processUserImageUrl(response.data.user.img);
-      console.log('URL de imagen procesada en checkToken:', processedImageUrl);
+        const processedImageUrl = processUserImageUrl(response.data.user.img);
+        console.log('URL de imagen procesada en checkToken:', processedImageUrl);
 
-      setExistsToken(true);
-      setUser({
-        email: response.data.user.email,
-        id: response.data.user.id,
-        username: response.data.user.username,
-        nombre: response.data.user.nombre,
-        apellido: response.data.user.apellido,
-        rol: response.data.user.rol,
-        img: processedImageUrl,
-      });
+        setExistsToken(true);
+        setUser({
+          email: response.data.user.email,
+          id: response.data.user.id,
+          username: response.data.user.username,
+          nombre: response.data.user.nombre,
+          apellido: response.data.user.apellido,
+          rol: response.data.user.rol,
+          img: processedImageUrl,
+        });
+      }
+    } catch {
+      setExistsToken(false);
+      setUser(null);
+    } finally {
+      setIsAuthLoading(false);
     }
   };
 
   return (
     <UserContext.Provider
-      value={{ user, login, logout, existsToken, checkToken }}
+      value={{ user, login, logout, existsToken, isAuthLoading, checkToken }}
     >
       {children}
     </UserContext.Provider>

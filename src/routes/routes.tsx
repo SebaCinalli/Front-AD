@@ -93,14 +93,7 @@ export default function AppRoutes() {
         }
       />
 
-      <Route
-        path="/resultado"
-        element={
-          <ProtectedRoutes>
-            <Resultado />
-          </ProtectedRoutes>
-        }
-      />
+      <Route path="/resultado" element={<Resultado />} />
 
       <Route
         path="/profile"

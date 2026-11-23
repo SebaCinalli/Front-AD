@@ -1,11 +1,40 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCart } from '../../context/cartcontext';
 import { useUser } from '../../context/usercontext';
 import { useAlert } from '../../context/alertcontext';
 import { UserBadge } from '../../components/userbadge';
+import { paymentService } from '../../services/paymentService';
 import './resultado.css';
+
+const normalizePaymentStatus = (
+  searchParams: URLSearchParams,
+): 'success' | 'failure' | 'pending' | null => {
+  const candidates = [
+    searchParams.get('collection_status'),
+    ...searchParams.getAll('status'),
+    searchParams.get('result'),
+  ]
+    .filter((v): v is string => Boolean(v))
+    .map((v) => v.trim().toLowerCase());
+
+  if (candidates.some((v) => v === 'approved' || v === 'success')) {
+    return 'success';
+  }
+  if (candidates.some((v) => v === 'rejected' || v === 'failure')) {
+    return 'failure';
+  }
+  if (
+    candidates.some(
+      (v) => v === 'pending' || v === 'in_process' || v === 'in_mediation',
+    )
+  ) {
+    return 'pending';
+  }
+
+  return null;
+};
 
 export const Resultado: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -14,13 +43,17 @@ export const Resultado: React.FC = () => {
   const { user } = useUser();
   const { showAlert } = useAlert();
   const [isProcessing, setIsProcessing] = useState(false);
+  const processedRef = useRef(false);
 
-  const status = searchParams.get('status');
+  const status = normalizePaymentStatus(searchParams);
+  const paymentId =
+    searchParams.get('payment_id') || searchParams.get('collection_id');
   const merchantOrderId = searchParams.get('merchant_order_id');
   const preferenceId = searchParams.get('preference_id');
 
   const getSolicitudIdFromPaymentContext = () => {
-    const fromQuery = searchParams.get('solicitudId');
+    const fromQuery =
+      searchParams.get('solicitudId') || searchParams.get('external_reference');
     if (fromQuery && /^\d+$/.test(fromQuery)) {
       return Number(fromQuery);
     }
@@ -64,6 +97,24 @@ export const Resultado: React.FC = () => {
   const marcarSolicitudComoPagada = async () => {
     let solicitudId = getSolicitudIdFromPaymentContext();
 
+    if (paymentId) {
+      try {
+        const confirmation = await paymentService.confirmPayment({
+          paymentId,
+          solicitudId,
+        });
+        if (confirmation.confirmed) {
+          localStorage.removeItem('pendingPaymentSolicitudId');
+          return;
+        }
+      } catch (error) {
+        console.error(
+          'Error al confirmar el pago en el backend, intentando fallback:',
+          error,
+        );
+      }
+    }
+
     if (!solicitudId) {
       solicitudId = await resolverSolicitudPendienteMasReciente();
     }
@@ -80,9 +131,10 @@ export const Resultado: React.FC = () => {
   };
 
   useEffect(() => {
-    // Procesar el resultado del pago
+    if (!status || processedRef.current) return;
+    processedRef.current = true;
     handlePaymentResult();
-  }, [status, merchantOrderId]);
+  }, [status, paymentId, merchantOrderId]);
 
   const handlePaymentResult = async () => {
     if (!status) return;
