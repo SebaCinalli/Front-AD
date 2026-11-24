@@ -198,7 +198,6 @@ export function Solicitud() {
 
   const fetchServiciosDisponibles = async () => {
     try {
-      console.log('Iniciando fetchServiciosDisponibles...');
       const [djResponse, salonResponse, barraResponse, gastronomicoResponse] =
         await Promise.all([
           axios.get(`${import.meta.env.VITE_API_URL}/api/dj`, {
@@ -215,13 +214,6 @@ export function Solicitud() {
           }),
         ]);
 
-      console.log('Respuestas recibidas:', {
-        djs: djResponse.data,
-        salones: salonResponse.data,
-        barras: barraResponse.data,
-        gastronomicos: gastronomicoResponse.data,
-      });
-
       const servicios = {
         djs: djResponse.data.data || djResponse.data,
         salones: salonResponse.data.data || salonResponse.data,
@@ -230,7 +222,6 @@ export function Solicitud() {
           gastronomicoResponse.data.data || gastronomicoResponse.data,
       };
 
-      console.log('Servicios procesados:', servicios);
       setServiciosDisponibles(servicios);
     } catch (error) {
       console.error('Error al cargar servicios disponibles:', error);
@@ -251,29 +242,6 @@ export function Solicitud() {
       .replace(/\s+/g, '-')
       .toLowerCase()}`;
     return <span className={className}>{estado}</span>;
-  };
-
-  const puedeEditar = (estado: string) => {
-    console.log(
-      'Estado de solicitud:',
-      `"${estado}"`,
-      'Longitud:',
-      estado.length,
-      'Puede editar:',
-      estado === 'Pendiente de pago',
-    );
-    // Hacer comparación más tolerante
-    const estadoNormalizado = estado?.trim().toLowerCase();
-    const puedeEditarResult =
-      estadoNormalizado === 'pendiente de pago' ||
-      estado === 'Pendiente de pago';
-    console.log(
-      'Estado normalizado:',
-      `"${estadoNormalizado}"`,
-      'Resultado final:',
-      puedeEditarResult,
-    );
-    return puedeEditarResult;
   };
 
   const handlePagarSolicitud = async (solicitud: Solicitud) => {
@@ -352,10 +320,8 @@ export function Solicitud() {
   };
 
   const handleEditarServicios = async (solicitudId: number) => {
-    console.log('handleEditarServicios ejecutado para solicitud:', solicitudId);
     setSolicitudEditandoServicios(solicitudId);
 
-    console.log('Llamando a fetchServiciosDisponibles...');
     await fetchServiciosDisponibles();
 
     // Encontrar la solicitud actual y establecer los servicios seleccionados
@@ -367,9 +333,6 @@ export function Solicitud() {
         barraId: solicitudActual.barra?.id || null,
         gastronomicoId: solicitudActual.gastronomico?.id || null,
       };
-
-      console.log('Solicitud actual:', solicitudActual);
-      console.log('Servicios iniciales establecidos:', serviciosIniciales);
 
       setServiciosSeleccionados(serviciosIniciales);
     } else {
@@ -396,10 +359,7 @@ export function Solicitud() {
         updateData.gastronomico = serviciosSeleccionados.gastronomicoId;
       }
 
-      console.log('Servicios seleccionados:', serviciosSeleccionados);
-      console.log('Datos enviados al backend:', updateData);
-
-      const updateResponse = await axios.put(
+      await axios.put(
         `${import.meta.env.VITE_API_URL}/api/solicitud/${solicitudId}`,
         updateData,
         {
@@ -409,8 +369,6 @@ export function Solicitud() {
           },
         },
       );
-
-      console.log('Respuesta exitosa del backend:', updateResponse.data);
 
       // Recargar las solicitudes para mostrar los cambios
       await fetchSolicitudes();
@@ -629,16 +587,12 @@ export function Solicitud() {
                           </button>
                           <button
                             className={`btn-editar-servicios ${
-                              !puedeEditar(solicitud.estado) ? 'disabled' : ''
+                              !esPendienteDePago(solicitud.estado)
+                                ? 'disabled'
+                                : ''
                             }`}
-                            onClick={() => {
-                              console.log(
-                                'Botón Editar Servicios clickeado para solicitud:',
-                                solicitud.id,
-                              );
-                              handleEditarServicios(solicitud.id);
-                            }}
-                            disabled={!puedeEditar(solicitud.estado)}
+                            onClick={() => handleEditarServicios(solicitud.id)}
+                            disabled={!esPendienteDePago(solicitud.estado)}
                             title="Editar servicios de la solicitud"
                           >
                             Editar Servicios
@@ -661,7 +615,6 @@ export function Solicitud() {
                                 const value = e.target.value
                                   ? parseInt(e.target.value)
                                   : null;
-                                console.log('Cambiando DJ a:', value);
                                 setServiciosSeleccionados({
                                   ...serviciosSeleccionados,
                                   djId: value,
@@ -688,7 +641,6 @@ export function Solicitud() {
                                 const value = e.target.value
                                   ? parseInt(e.target.value)
                                   : null;
-                                console.log('Cambiando Salón a:', value);
                                 setServiciosSeleccionados({
                                   ...serviciosSeleccionados,
                                   salonId: value,
@@ -717,7 +669,6 @@ export function Solicitud() {
                                 const value = e.target.value
                                   ? parseInt(e.target.value)
                                   : null;
-                                console.log('Cambiando Barra a:', value);
                                 setServiciosSeleccionados({
                                   ...serviciosSeleccionados,
                                   barraId: value,
@@ -746,7 +697,6 @@ export function Solicitud() {
                                 const value = e.target.value
                                   ? parseInt(e.target.value)
                                   : null;
-                                console.log('Cambiando Gastronómico a:', value);
                                 setServiciosSeleccionados({
                                   ...serviciosSeleccionados,
                                   gastronomicoId: value,
@@ -794,5 +744,3 @@ export function Solicitud() {
     </div>
   );
 }
-
-export default Solicitud;

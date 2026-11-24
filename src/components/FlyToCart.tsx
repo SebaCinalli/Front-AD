@@ -65,7 +65,7 @@ export const FlyToCart: React.FC = () => {
           }, 200);
           clearTimeout(removeTimeout);
         }, 800);
-      } catch (e) {
+      } catch {
         // ignore
       }
     };
@@ -78,5 +78,3 @@ export const FlyToCart: React.FC = () => {
 
   return null;
 };
-
-export default FlyToCart;

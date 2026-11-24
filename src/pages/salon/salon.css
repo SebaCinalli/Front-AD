@@ -1,5 +1,3 @@
-@import '../../styles/darkTheme.css';
-
 @media (min-width: 1024px) {
   .salon-container {
     display: flex;

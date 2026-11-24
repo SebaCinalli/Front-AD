@@ -410,20 +410,6 @@ export function DjAdmin() {
                 </select>
               </div>
 
-              {/* Campo manual de imagen comentado - ahora solo se usa el uploader
-              <div className="form-group">
-                <label htmlFor="foto">Imagen (opcional):</label>
-                <input
-                  type="text"
-                  id="foto"
-                  name="foto"
-                  value={formData.foto}
-                  onChange={handleInputChange}
-                  placeholder="Nombre del archivo o URL completa"
-                />
-              </div>
-              */}
-
               {/* Campo para subir archivo de imagen */}
               <div className="form-group">
                 <label htmlFor="imagen">Subir imagen (opcional):</label>

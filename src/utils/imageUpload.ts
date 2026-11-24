@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Utilidad para subir imágenes al backend usando axios
-export const uploadImage = async (
+const uploadImage = async (
   entityType: string,
   entityId: number,
   file: File
@@ -9,13 +9,6 @@ export const uploadImage = async (
   try {
     const formData = new FormData();
     formData.append('imagen', file);
-
-    console.log(
-      `Subiendo imagen a: ${
-        import.meta.env.VITE_API_URL
-      }/api/${entityType}/${entityId}/upload-image`
-    );
-    console.log('Archivo:', file.name, file.size, file.type);
 
     const response = await axios.post(
       `${
@@ -31,7 +24,6 @@ export const uploadImage = async (
     );
 
     const result = response.data;
-    console.log('Response data completa:', result);
 
     // Intentar extraer el nombre del archivo de diferentes posibles ubicaciones
     const fileName =
@@ -46,16 +38,10 @@ export const uploadImage = async (
       result.fileName ||
       result.filename;
 
-    console.log('Nombre del archivo extraído:', fileName);
-
     let finalImageUrl = '';
     if (fileName && fileName.trim() !== '') {
       const baseUrls: { [key: string]: string } = {
         usuario: `${import.meta.env.VITE_API_URL}/uploads/usuarios/`,
-        dj: `${import.meta.env.VITE_API_URL}/uploads/djs/`,
-        barra: `${import.meta.env.VITE_API_URL}/uploads/barras/`,
-        salon: `${import.meta.env.VITE_API_URL}/uploads/salones/`,
-        gastronomico: `${import.meta.env.VITE_API_URL}/uploads/gastronomicos/`,
       };
 
       const baseUrl = baseUrls[entityType];
@@ -65,7 +51,6 @@ export const uploadImage = async (
         // Si no hay baseUrl definida, usar el fileName tal como viene
         finalImageUrl = fileName;
       }
-      console.log('URL completa construida:', finalImageUrl);
     } else {
       console.warn(
         'No se pudo extraer el nombre del archivo de la respuesta:',
@@ -139,18 +124,6 @@ export const processUserImageUrl = (
   return `${import.meta.env.VITE_API_URL}/uploads/usuarios/${imageData}`;
 };
 
-// Funciones específicas para cada entidad
+// Función específica para subir imagen de usuario
 export const uploadUsuarioImage = (usuarioId: number, file: File) =>
   uploadImage('usuario', usuarioId, file);
-
-export const uploadDjImage = (djId: number, file: File) =>
-  uploadImage('dj', djId, file);
-
-export const uploadBarraImage = (barraId: number, file: File) =>
-  uploadImage('barra', barraId, file);
-
-export const uploadSalonImage = (salonId: number, file: File) =>
-  uploadImage('salon', salonId, file);
-
-export const uploadGastronomicoImage = (gastronomicoId: number, file: File) =>
-  uploadImage('gastronomico', gastronomicoId, file);

@@ -20,23 +20,8 @@ interface MenuAdminItem {
   onClick: () => void;
 }
 
-interface MenuProps {
-  title?: string;
-  onItemClick?: (item: MenuAdminItem) => void;
-}
-
-const MenuAdmin: React.FC<MenuProps> = ({
-  title = 'Menú Principal',
-  onItemClick,
-}) => {
+const MenuAdmin: React.FC = () => {
   const navigate = useNavigate();
-
-  const handleItemClick = (item: MenuAdminItem) => {
-    if (onItemClick) {
-      onItemClick(item);
-    }
-    item.onClick();
-  };
 
   const menuItems: MenuAdminItem[] = [
     {
@@ -81,16 +66,16 @@ const MenuAdmin: React.FC<MenuProps> = ({
     <div className="menu-body">
       <UserBadge />
       <div className="container">
-        <h2>{title}</h2>
+        <h2>Menú Principal</h2>
 
         <div className="icons-grid">
           {menuItems.map((item) => (
             <div
               key={item.id}
               className={`icon-item ${
-                item.id === 'carrito' ? 'cart-item' : ''
-              } ${item.id === 'solicitud' ? 'solicitud-item' : ''}`}
-              onClick={() => handleItemClick(item)}
+                item.id === 'solicitud' ? 'solicitud-item' : ''
+              }`}
+              onClick={item.onClick}
             >
               <FontAwesomeIcon icon={item.icon} />
               <div className="tooltip">{item.tooltip}</div>

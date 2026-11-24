@@ -49,7 +49,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   try {
     const alert = useAlert();
     showAlert = alert.showAlert;
-  } catch (e) {
+  } catch {
     // Si AlertProvider no está disponible, usar alert nativo como fallback
     showAlert = (message: string) => alert(message);
   }

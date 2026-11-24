@@ -128,12 +128,8 @@ export const Profile: React.FC = () => {
   }, [user, originalUser]);
 
   const handleBackToMenu = useCallback(() => {
-    if (contextUser?.rol === 'Admin') {
-      navigate('/menuAdmin');
-    } else {
-      navigate('/menu');
-    }
-  }, [contextUser?.rol, navigate]);
+    navigate('/');
+  }, [navigate]);
 
   const handleEditStart = useCallback(
     (field: keyof UserProfile, value: string) => {
@@ -177,9 +173,6 @@ export const Profile: React.FC = () => {
         apellido: user.apellido,
         email: user.email,
         username: user.nombreUsuario,
-        // Agrega telefono si tu API lo soporta
-        // telefono: user.telefono,
-        // img: user.img
       };
 
       const response = await axios.put(
@@ -312,23 +305,10 @@ export const Profile: React.FC = () => {
 
   // Función para manejar cuando la imagen se carga correctamente
   const handleImageLoad = () => {
-    console.log('Imagen cargada correctamente:', user.img);
     if (imageError) {
       setImageError(false);
     }
   };
-
-  // Debug: Log para verificar el estado de la imagen
-  useEffect(() => {
-    console.log(
-      'Estado de imagen - URL:',
-      user.img,
-      'Error:',
-      imageError,
-      'HasValidImage:',
-      hasValidImage
-    );
-  }, [user.img, imageError, hasValidImage]);
 
   return (
     <div className="profile-container">

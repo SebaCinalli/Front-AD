@@ -13,7 +13,6 @@ const Login = () => {
   const { login } = useUser();
   const navigate = useNavigate();
   const { showAlert } = useAlert();
-  // const { clearEventDate } = useEventDate();
   const [email, setMail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');

@@ -72,9 +72,8 @@ export function Salon() {
     // Despachar evento para animación: intentamos obtener la imagen del card
     try {
       const imgEl = document.querySelector(
-        `.salon-card[key="${salon.id}"] img`
+        `.salon-card img[alt="${salon.nombre}"]`
       ) as HTMLImageElement | null;
-      // fallback: buscar imagen por alt
       const img =
         imgEl ||
         (document.querySelector(
@@ -91,7 +90,7 @@ export function Salon() {
         height: rect.height,
       };
       window.dispatchEvent(new CustomEvent('fly-to-cart', { detail }));
-    } catch (e) {
+    } catch {
       // ignore
     }
   };
@@ -396,15 +395,10 @@ export function Salon() {
                     </div>
                   ) : (
                     <button
-                      className={`add-to-cart-btn ${
-                        isInCart(salon.id, 'salon') ? 'added' : ''
-                      }`}
+                      className="add-to-cart-btn"
                       onClick={() => handleAddToCart(salon)}
-                      disabled={isInCart(salon.id, 'salon')}
                     >
-                      <>
-                        <span>🛒</span> Agregar
-                      </>
+                      <span>🛒</span> Agregar
                     </button>
                   )}
                 </div>

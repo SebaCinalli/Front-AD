@@ -34,8 +34,8 @@ export const CustomAlert: React.FC<CustomAlertProps> = ({
   };
 
   return (
-    <div className={`custom-alert-overlay ${isVisible ? 'visible' : ''}`}>
-      <div className={`custom-alert-container ${type} ${isVisible ? 'show' : ''}`}>
+    <div className="custom-alert-overlay visible">
+      <div className={`custom-alert-container ${type} show`}>
         <div className="custom-alert-icon">{getIcon()}</div>
         <div className="custom-alert-content">
           <p className="custom-alert-message">{message}</p>

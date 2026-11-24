@@ -401,5 +401,3 @@ export function SolicitudAdmin() {
     </div>
   );
 }
-
-export default SolicitudAdmin;

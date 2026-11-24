@@ -90,7 +90,7 @@ export function Gastronomico() {
         height: rect.height,
       };
       window.dispatchEvent(new CustomEvent('fly-to-cart', { detail }));
-    } catch (e) {
+    } catch {
       // ignore
     }
   };
@@ -383,15 +383,10 @@ export function Gastronomico() {
                     </div>
                   ) : (
                     <button
-                      className={`add-to-cart-btn ${
-                        isInCart(gastronomico.id, 'gastronomico') ? 'added' : ''
-                      }`}
+                      className="add-to-cart-btn"
                       onClick={() => handleAddToCart(gastronomico)}
-                      disabled={isInCart(gastronomico.id, 'gastronomico')}
                     >
-                      <>
-                        <span>🛒</span> Agregar
-                      </>
+                      <span>🛒</span> Agregar
                     </button>
                   )}
                 </div>

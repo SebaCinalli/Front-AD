@@ -28,7 +28,6 @@ export default function AppRoutes() {
     <Routes>
       {/* RUTAS PUBLICAS */}
       <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
-      <Route path="/force-login" element={<Login />} />
       <Route
         path="/signup"
         element={user ? <Navigate to="/" /> : <CreateUser />}
@@ -108,7 +107,7 @@ export default function AppRoutes() {
       <Route
         path="/barraAdmin"
         element={
-          <ProtectedRoutes>
+          <ProtectedRoutes rol="administrador">
             <BarraAdmin />
           </ProtectedRoutes>
         }
@@ -116,7 +115,7 @@ export default function AppRoutes() {
       <Route
         path="/gastronomicoAdmin"
         element={
-          <ProtectedRoutes>
+          <ProtectedRoutes rol="administrador">
             <GastronomicoAdmin />
           </ProtectedRoutes>
         }
@@ -124,7 +123,7 @@ export default function AppRoutes() {
       <Route
         path="/salonAdmin"
         element={
-          <ProtectedRoutes>
+          <ProtectedRoutes rol="administrador">
             <SalonAdmin />
           </ProtectedRoutes>
         }
@@ -132,7 +131,7 @@ export default function AppRoutes() {
       <Route
         path="/djAdmin"
         element={
-          <ProtectedRoutes>
+          <ProtectedRoutes rol="administrador">
             <DjAdmin />
           </ProtectedRoutes>
         }
@@ -140,7 +139,7 @@ export default function AppRoutes() {
       <Route
         path="/zonaAdmin"
         element={
-          <ProtectedRoutes>
+          <ProtectedRoutes rol="administrador">
             <ZonaAdmin />
           </ProtectedRoutes>
         }
@@ -148,8 +147,8 @@ export default function AppRoutes() {
       <Route
         path="/solicitudAdmin"
         element={
-          <ProtectedRoutes>
-            {isAdmin ? <SolicitudAdmin /> : <Navigate to="/" />}
+          <ProtectedRoutes rol="administrador">
+            <SolicitudAdmin />
           </ProtectedRoutes>
         }
       />

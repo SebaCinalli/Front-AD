@@ -134,7 +134,7 @@ export const Resultado: React.FC = () => {
     if (!status || processedRef.current) return;
     processedRef.current = true;
     handlePaymentResult();
-  }, [status, paymentId, merchantOrderId]);
+  }, [status, paymentId]);
 
   const handlePaymentResult = async () => {
     if (!status) return;

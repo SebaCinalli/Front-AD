@@ -17,7 +17,6 @@ type UserContextType = {
   user: User | null;
   login: (userData: User) => void;
   logout: () => void;
-  existsToken: boolean;
   isAuthLoading: boolean;
   checkToken: () => Promise<void>;
 };
@@ -26,7 +25,6 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactElement }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [existsToken, setExistsToken] = useState<boolean>(false);
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
 
   const login = (userData: User) => {
@@ -47,7 +45,6 @@ export const UserProvider = ({ children }: { children: ReactElement }) => {
     } finally {
       // Siempre limpiar el estado local, incluso si falla la llamada al servidor
       setUser(null);
-      setExistsToken(false);
       setIsAuthLoading(false);
       // No limpiamos aquí eventDate para evitar acoplamiento; se hace en UI al invocar logout
     }
@@ -61,12 +58,8 @@ export const UserProvider = ({ children }: { children: ReactElement }) => {
         { withCredentials: true }
       );
       if (response.status === 200 && response.data) {
-        console.log('Datos del usuario desde checkToken:', response.data.user);
-
         const processedImageUrl = processUserImageUrl(response.data.user.img);
-        console.log('URL de imagen procesada en checkToken:', processedImageUrl);
 
-        setExistsToken(true);
         setUser({
           email: response.data.user.email,
           id: response.data.user.id,
@@ -78,7 +71,6 @@ export const UserProvider = ({ children }: { children: ReactElement }) => {
         });
       }
     } catch {
-      setExistsToken(false);
       setUser(null);
     } finally {
       setIsAuthLoading(false);
@@ -87,7 +79,7 @@ export const UserProvider = ({ children }: { children: ReactElement }) => {
 
   return (
     <UserContext.Provider
-      value={{ user, login, logout, existsToken, isAuthLoading, checkToken }}
+      value={{ user, login, logout, isAuthLoading, checkToken }}
     >
       {children}
     </UserContext.Provider>
